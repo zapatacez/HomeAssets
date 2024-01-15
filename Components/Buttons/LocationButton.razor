@@ -1,0 +1,35 @@
+@using HomeAssets.Components.Dialogs
+@inject IDialogService DialogService
+
+    <FluentButton @onclick="OpenLocationDialogAsync" Appearance="Appearance.Accent">
+                Add Location
+            </FluentButton>
+
+@code {
+    private bool _trapFocus = true;
+    private bool _modal = true;
+
+    Location location = new();
+    private async Task OpenLocationDialogAsync()
+    {
+        DialogParameters parameters = new()
+        {
+            Title = $"Add New Location",
+            PrimaryAction = "Yes",
+            PrimaryActionEnabled = false,
+            SecondaryAction = "No",
+            Width = "500px",
+            TrapFocus = _trapFocus,
+            Modal = _modal,
+            PreventScroll = true
+        };
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<LocationDialog>(location, parameters);
+        DialogResult? result = await dialog.Result;
+        if (!result.Cancelled && result.Data != null)
+        {
+            location = (Location)result.Data;
+        }
+    }
+
+}

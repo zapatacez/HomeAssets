@@ -1,0 +1,44 @@
+
+@implements IDialogContentComponent<Location>
+
+@* Header *@
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.WindowApps())" />
+        <FluentLabel Typo="Typography.PaneHeader">
+            @Dialog.Instance.Parameters.Title
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentTextField @bind-value="@Content.Name" />
+ <FluentTextArea @bind-Value="@Content.Description" Cols="60"></FluentTextArea>
+
+<FluentGrid Spacing="3"  Style="background-color: var(--neutral-layer-3);">
+    <FluentGridItem xs="12">
+        <div class="card">
+            xs="12"
+        </div>
+    </FluentGridItem>
+</FluentGrid>
+
+@* Footer *@
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync">Save</FluentButton>
+    
+</FluentDialogFooter>
+     
+@code{
+
+    [Parameter]
+    public Location Content { get; set; } = default;
+    
+    [CascadingParameter]
+    public FluentDialog? Dialog { get; set; }
+
+    private async Task SaveAsync()
+    {
+        await Dialog.CloseAsync(Content);
+    }
+
+}
