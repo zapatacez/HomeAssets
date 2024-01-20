@@ -13,11 +13,13 @@ public class UnitOfWork : IUnitOfWork
         ItemRepository = new Repository<Item>(_dbContext);
         LocationRepository = new Repository<Location>(_dbContext);
         LabelRepository = new Repository<Label>(_dbContext);
+        ItemLabelRepository = new Repository<ItemLabel>(_dbContext);
     }
 
     public IRepository<Item> ItemRepository { get; }
     public IRepository<Location> LocationRepository { get; }
     public IRepository<Label> LabelRepository { get; }
+    public IRepository<ItemLabel> ItemLabelRepository { get; }
 
     public async Task SaveChangesAsync()
     {

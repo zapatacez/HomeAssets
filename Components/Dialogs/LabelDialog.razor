@@ -1,7 +1,7 @@
 
 @using HomeAssets.Entities
 @implements IDialogContentComponent<Label>
-
+@inject IToastService ToastService
 @* Header *@
 <FluentDialogHeader ShowDismiss="true">
     <FluentStack VerticalAlignment="VerticalAlignment.Center">
@@ -31,7 +31,17 @@
 
     private async Task SaveAsync()
     {
-        await Dialog.CloseAsync(Content);
+        //check if Content is valid
+        if (Content is { Name: "",Description: "" })
+        {
+            ToastService.ShowToast(ToastIntent.Error, "Error adding Label", null, null,null);
+            return;
+        }
+        else
+        {
+            await Dialog.CloseAsync(Content);    
+        }
+        
     }
 
 }

@@ -1,7 +1,10 @@
 
 @using HomeAssets.Entities
+@using HomeAssets.Services
 @implements IDialogContentComponent<Item>
-
+@inject IToastService ToastService
+@inject ILocationService LocationService
+@inject ILabelService LabelService
 @* Header *@
 <FluentDialogHeader ShowDismiss="true">
     <FluentStack VerticalAlignment="VerticalAlignment.Center">
@@ -11,17 +14,17 @@
         </FluentLabel>
     </FluentStack>
 </FluentDialogHeader>
+<FluentCombobox Items="@locationOptions" Label="Parent Location"
+                TOption="Location"
+                OptionText="@(location => location.Name)" 
+                OptionValue="@(location => location.Id.ToString())" 
+                @bind-SelectedOption="@selectedLocationOption"
+                @bind-Value="@selectedLocationId" />
 
-<FluentTextField @bind-value="@Content.Name" />
- <FluentTextArea @bind-Value="@Content.Description" Cols="60"></FluentTextArea>
+<FluentTextField @bind-value="@Content.Name" Label="Item Name" />
+ <FluentTextArea @bind-Value="@Content.Description" Cols="60" Label="Item Description"></FluentTextArea>
 
-<FluentGrid Spacing="3"  Style="background-color: var(--neutral-layer-3);">
-    <FluentGridItem xs="12">
-        <div class="card">
-            xs="12"
-        </div>
-    </FluentGridItem>
-</FluentGrid>
+ 
 
 @* Footer *@
 <FluentDialogFooter>
@@ -36,10 +39,29 @@
     
     [CascadingParameter]
     public FluentDialog? Dialog { get; set; }
+    string? selectedLocationId;
+    Location? selectedLocationOption;
+    List<Location> locationOptions = new List<Location>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+    // Fetch locations from the service when the component is initialized
+        locationOptions = await LocationService.GetAllLocationsAsync();
+    }
 
+    
+    
     private async Task SaveAsync()
     {
-        await Dialog.CloseAsync(Content);
+        if (Content is { Name: "",Description: "" })
+        {
+            ToastService.ShowToast(ToastIntent.Error, "Error adding Item", null, null,null);
+            return;
+        }
+        else
+        {
+            await Dialog.CloseAsync(Content);    
+        }
     }
 
 }

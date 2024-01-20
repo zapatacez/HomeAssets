@@ -2,7 +2,7 @@
 @using HomeAssets.Services
 @implements IDialogContentComponent<Location>
 @inject ILocationService LocationService
-
+@inject IToastService ToastService
 @* Header *@
 <FluentDialogHeader ShowDismiss="true">
     <FluentStack VerticalAlignment="VerticalAlignment.Center">
@@ -55,6 +55,16 @@
         {
             Content.ParentLocationId = selectedLocationOption.Id;
         }
-        await Dialog.CloseAsync(Content);
+        
+        if (Content is { Name: "",Description: "" })
+        {
+            ToastService.ShowToast(ToastIntent.Error, "Error adding Location", null, null,null);
+            return;
+        }
+        else
+        {
+            await Dialog.CloseAsync(Content);    
+        }
+        
     }
 }

@@ -14,13 +14,8 @@ public class AppDbContext : DbContext
     public DbSet<Location> Locations { get; set; } = null!;
     public DbSet<Item> Items { get; set; } = null!;
     public DbSet<Label> Labels { get; set; } = null!;
-    // public DbSet<Asset> Assets { get; set; } = null!;
-    // public DbSet<AssetType> AssetTypes { get; set; } = null!;
-    // public DbSet<AssetLocation> AssetLocations { get; set; } = null!;
-    // public DbSet<AssetOwner> AssetOwners { get; set; } = null!;
-    // public DbSet<AssetStatus> AssetStatuses { get; set; } = null!;
-    // public DbSet<AssetUsage> AssetUsages { get; set; } = null!;
-    // public DbSet<AssetUser> AssetUsers { get; set; } = null!;
+    public DbSet<ItemLabel> ItemLabels { get; set; } = null!;
+ 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

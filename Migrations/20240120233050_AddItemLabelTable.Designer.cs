@@ -3,6 +3,7 @@ using System;
 using HomeAssets.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeAssets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240120233050_AddItemLabelTable")]
+    partial class AddItemLabelTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
@@ -77,7 +80,7 @@ namespace HomeAssets.Migrations
 
             modelBuilder.Entity("HomeAssets.Entities.ItemLabel", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ItemLabelId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
@@ -87,7 +90,7 @@ namespace HomeAssets.Migrations
                     b.Property<Guid>("LabelId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("ItemLabelId");
 
                     b.HasIndex("ItemId");
 
