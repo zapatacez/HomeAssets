@@ -1,0 +1,156 @@
+@using HomeAssets.Components.Dialogs
+@using HomeAssets.Entities
+@using HomeAssets.Services
+@inject IDialogService DialogService
+@inject ILocationService LocationService
+@inject IItemService ItemService
+@inject ILabelService LabelService
+@inject IToastService ToastService
+
+
+<FluentMenuButton Apperance="Appearance.Accent" @ref=menubutton Text="Create" Items="@items" OnMenuChanged="HandleOnMenuChanged"></FluentMenuButton>
+@code {
+    private FluentMenuButton menubutton = new();
+    
+    //create menu items
+    private Dictionary<string, string> items = new Dictionary<string, string>()
+    {
+        {"0","Location"},
+        {"1","Item/Asset"},
+        {"2","Label"},
+    };
+    
+    //handle location on click
+    private bool _trapFocus = true;
+    private bool _modal = true;
+
+    private async Task HandleOnMenuChanged(MenuChangeEventArgs args)
+    {
+        if (args.Id == "0")
+        {
+            await OpenLocationDialogAsync();
+        }
+        else if (args.Id == "1")
+        {
+            await OpenItemDialogAsync();
+        }
+        else if (args.Id == "2")
+        {
+            await OpenLabelDialogAsync();
+        }
+
+        
+    }
+    private async Task OpenLocationDialogAsync()
+    {
+        Location location = new();
+        DialogParameters parameters = new()
+        {
+            Title = $"Add New Location",
+            PrimaryAction = "Yes",
+            PrimaryActionEnabled = false,
+            SecondaryAction = "No",
+            Width = "500px",
+            TrapFocus = _trapFocus,
+            Modal = _modal,
+            PreventScroll = true
+        };
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<LocationDialog>(location, parameters);
+        DialogResult? result = await dialog.Result;
+        if (!result.Cancelled && result.Data != null)
+        {
+            location = (Location)result.Data;
+    //save location 
+            
+            try
+            {
+    // Save location and if successful show toast
+                await LocationService.AddLocationAsync(location);
+                ToastService.ShowToast(ToastIntent.Success, "Location Added", null, null, null);
+                
+            }
+            catch (Exception ex)
+            {
+    // If there's an error, show toast with error message
+                ToastService.ShowToast(ToastIntent.Error, "Error adding location", null, null,null);
+            }
+
+        }
+    }
+    
+    private async Task OpenItemDialogAsync()
+    {
+        Item item = new();
+        DialogParameters parameters = new()
+        {
+            Title = $"Add New Item",
+            PrimaryAction = "Yes",
+            PrimaryActionEnabled = false,
+            SecondaryAction = "No",
+            Width = "500px",
+            TrapFocus = _trapFocus,
+            Modal = _modal,
+            PreventScroll = true
+        };
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<ItemDialog>(item, parameters);
+        DialogResult? result = await dialog.Result;
+        if (!result.Cancelled && result.Data != null)
+        {
+            item = (Item)result.Data;
+    //save item 
+            
+            try
+            {
+    // Save item and if successful show toast
+                await ItemService.AddItemAsync(item);
+                ToastService.ShowToast(ToastIntent.Success, "Item Added", null, null, null);
+                
+            }
+            catch (Exception ex)
+            {
+    // If there's an error, show toast with error message
+                ToastService.ShowToast(ToastIntent.Error, "Error adding item", null, null,null);
+            }
+
+        }
+    }
+    
+    private async Task OpenLabelDialogAsync()
+    {
+        Label label = new();
+        DialogParameters parameters = new()
+        {
+            Title = $"Create Label",
+            PrimaryAction = "Yes",
+            PrimaryActionEnabled = false,
+            SecondaryAction = "No",
+            Width = "500px",
+            TrapFocus = _trapFocus,
+            Modal = _modal,
+            PreventScroll = true
+        };
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<LabelDialog>(label, parameters);
+        DialogResult? result = await dialog.Result;
+        if (!result.Cancelled && result.Data != null)
+        {
+            label = (Label)result.Data;
+            try
+            {
+    // Save label and if successful show toast
+                await LabelService.AddLabelAsync(label);
+                ToastService.ShowToast(ToastIntent.Success, "Location Added", null, null, null);
+                
+            }
+            catch (Exception ex)
+            {
+    // If there's an error, show toast with error message
+                ToastService.ShowToast(ToastIntent.Error, "Error adding location", null, null,null);
+            }
+
+        }
+    }
+    
+}

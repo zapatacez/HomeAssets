@@ -1,5 +1,7 @@
 
+@using HomeAssets.Services
 @implements IDialogContentComponent<Location>
+@inject ILocationService LocationService
 
 @* Header *@
 <FluentDialogHeader ShowDismiss="true">
@@ -11,16 +13,16 @@
     </FluentStack>
 </FluentDialogHeader>
 
-<FluentTextField @bind-value="@Content.Name" />
- <FluentTextArea @bind-Value="@Content.Description" Cols="60"></FluentTextArea>
+<FluentTextField @bind-value="@Content.Name" Label="Location Name" />
+ <FluentTextArea @bind-Value="@Content.Description" Label="Location Description" Cols="60"></FluentTextArea>
+ 
 
-<FluentGrid Spacing="3"  Style="background-color: var(--neutral-layer-3);">
-    <FluentGridItem xs="12">
-        <div class="card">
-            xs="12"
-        </div>
-    </FluentGridItem>
-</FluentGrid>
+<FluentCombobox Items="@locationOptions" 
+                TOption="Location"
+                OptionText="@(location => location.Name)" 
+                OptionValue="@(location => location.Id.ToString())" 
+                @bind-SelectedOption="@selectedLocationOption"
+                @bind-Value="@selectedLocationId" />
 
 @* Footer *@
 <FluentDialogFooter>
@@ -32,13 +34,27 @@
 
     [Parameter]
     public Location Content { get; set; } = default;
+    string? selectedLocationId;
+    Location? selectedLocationOption;
+    List<Location> locationOptions = new List<Location>();
+    
     
     [CascadingParameter]
     public FluentDialog? Dialog { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+    // Fetch locations from the service when the component is initialized
+        locationOptions = await LocationService.GetAllLocationsAsync();
+    }
 
     private async Task SaveAsync()
     {
+    // Set the ParentLocationId in the Content based on the selected location
+        if (selectedLocationOption != null)
+        {
+            Content.ParentLocationId = selectedLocationOption.Id;
+        }
         await Dialog.CloseAsync(Content);
     }
-
 }

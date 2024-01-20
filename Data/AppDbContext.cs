@@ -1,3 +1,4 @@
+using HomeAssets.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeAssets.Data;
@@ -11,6 +12,8 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Location> Locations { get; set; } = null!;
+    public DbSet<Item> Items { get; set; } = null!;
+    public DbSet<Label> Labels { get; set; } = null!;
     // public DbSet<Asset> Assets { get; set; } = null!;
     // public DbSet<AssetType> AssetTypes { get; set; } = null!;
     // public DbSet<AssetLocation> AssetLocations { get; set; } = null!;
