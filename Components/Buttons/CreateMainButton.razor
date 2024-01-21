@@ -103,7 +103,9 @@
             
             try
             {
-    // Save item and if successful show toast
+                var currentLocation = await LocationService.GetLocationByIdAsync(item.LocationId);
+                item.Location = currentLocation;
+                item.LocationId = currentLocation.Id;
                 await ItemService.AddItemAsync(item);
                 ToastService.ShowToast(ToastIntent.Success, "Item Added", null, null, null);
                 

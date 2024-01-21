@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using HomeAssets.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,17 @@ public class Repository<T> : IRepository<T> where T : class
         return await _dbContext.Set<T>().ToListAsync();
     }
 
+    public async Task<List<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties)
+    {
+        IQueryable<T> query = _dbContext.Set<T>();
+
+        foreach (var includeProperty in includeProperties)
+        {
+            query = query.Include(includeProperty);
+        }
+
+        return await query.ToListAsync();
+    }
     public async Task<T> GetByIdAsync(Guid id)
     {
         return await _dbContext.Set<T>().FindAsync(id);

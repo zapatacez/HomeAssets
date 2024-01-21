@@ -28,5 +28,16 @@ public class LocationService: ILocationService
     {
         return await _locationRepository.GetAllAsync();
     }
+    
+    //Get location by Id
+    public async Task<Location> GetLocationByIdAsync(Guid id)
+    {
+        return await _locationRepository.GetByIdAsync(id);
+    }
+    
+    public async Task<List<Location>> GetLocationsWithItemsAsync()
+    {
+        return await _locationRepository.GetAllAsync(l => l.Items);
+    }
  
 }

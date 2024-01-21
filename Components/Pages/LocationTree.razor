@@ -1,0 +1,56 @@
+@page "/locationtree"
+@using HomeAssets.Services
+@inject ILocationService LocationService
+@inject IItemService ItemService
+<h3>LocationTree</h3>
+
+<p>Locations</p>
+@foreach (var location in locations)
+{
+    <FluentStack Orientation="Orientation.Horizontal">
+        <FluentTreeView>
+            <FluentTreeItem @bind-Expanded="@LocationExpanded">
+                @location.Name
+                @foreach(var item in location.Items)
+                {
+                    <FluentTreeItem>
+                        @item.Name
+                    </FluentTreeItem>
+                }
+
+            </FluentTreeItem>
+        </FluentTreeView>
+
+    </FluentStack>
+}
+
+@code {
+    List<Location> locations = new List<Location>();
+    FluentTreeItem? currentSelected;
+    FluentTreeItem? currentAffected;
+    bool LocationExpanded = false;
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+    // Fetch locations from the service when the component is initialized
+        locations = await LocationService.GetLocationsWithItemsAsync();
+    }
+
+
+    private async Task HandleOnExpandedChanged(FluentTreeItem treeItem)
+    {
+    // Handle changes in the tree item's expansion status
+    //     if (treeItem.Expanded)
+    //     {
+    // // Fetch items associated with the expanded location
+    //         var location = locations.Find(l => l.Name == treeItem.Text);
+    //         if (location != null)
+    //         {
+    //             location.Expanded = true;
+    //             treeItem.Expanded = true;
+    //         }
+    //     }
+    }
+
+}

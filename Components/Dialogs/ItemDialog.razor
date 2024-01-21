@@ -47,19 +47,13 @@
     
     [CascadingParameter]
     public FluentDialog? Dialog { get; set; }
-    string? selectedLocationId;
+    string selectedLocationId;
     Location? selectedLocationOption;
     List<Location> locationOptions = new List<Location>();
     
     
     
-    List<Option<string>> stringOptions = new()
-    {
-        { new Option<string> { Value = "1", Text = "One" } },
-        { new Option<string> { Value = "2", Text = "Two", Selected = true} },
-        { new Option<string> { Value = "3", Text = "Three" } }
 
-    };
     IEnumerable<Label> selectedLabels = Array.Empty<Label>();
 
     private async Task OnSearchAsync(OptionsSearchEventArgs<Label> e)
@@ -79,6 +73,7 @@
     
     private async Task SaveAsync()
     {
+        
         if (Content is { Name: "",Description: "" })
         {
             ToastService.ShowToast(ToastIntent.Error, "Error adding Item", null, null,null);
@@ -86,12 +81,14 @@
         }
         else
         {
-    // Assign the selected labels to the item's ItemLabels property
-            Content.ItemLabels = selectedLabels
-                .Select(label => new ItemLabel { LabelId = label.Id, ItemId = Content.Id })  // Assuming LabelId and ItemId are the foreign keys
-                .ToList();
+            
+                Content.LocationId = selectedLocationOption.Id;
+                Content.ItemLabels = selectedLabels
+                    .Select(label => new ItemLabel { LabelId = label.Id, ItemId = Content.Id }) // Assuming LabelId and ItemId are the foreign keys
+                    .ToList();
 
-            await Dialog.CloseAsync(Content);    
+                await Dialog.CloseAsync(Content);
+           
         }
     }
 
