@@ -1,0 +1,121 @@
+@page "/location/{id:guid}"
+@using HomeAssets.Services
+@using HomeAssets.Components.Dialogs
+@inject ILocationService LocationService
+@inherits LayoutComponentBase
+@inject IDialogService DialogService
+@inject IToastService ToastService
+@rendermode InteractiveServer
+
+<FluentCard Width="750px">
+    <FluentGrid>
+        <FluentGridItem xs="1" sm="1"><FluentIcon Value="@(new Icons.Regular.Size24.Location())"/></FluentGridItem>
+        <FluentGridItem xs="6" sm="3"><h2>@location.Name</h2></FluentGridItem>
+         <FluentGridItem xs="12" sm="6">  <FluentButton IconStart="@(new Icons.Regular.Size16.Pen())" OnClick="@OpenLocationDialogAsync" Appearance="Appearance.Accent">Edit</FluentButton></FluentGridItem>
+    </FluentGrid>
+    
+ 
+        
+  
+</FluentCard>
+
+<h3>Items</h3>
+
+<FluentStack Orientation="Orientation.Horizontal">
+    @foreach (var item in location.Items)
+    {
+        <FluentCard Width="250px" Height="200px" Class="item-card">
+            <label>@item.Name</label>
+            <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+
+            <div class="qty-badge">
+                <FluentBadge Circular="true" Appearance="Appearance.Accent">
+                   
+                    @item.Quantity
+                </FluentBadge>
+            </div>
+
+   
+            <div class="labels">
+                @foreach (var itemLabel in item.ItemLabels)
+                {
+                    var label = itemLabel.Label; // Access the Label entity associated with the ItemLabel
+                 
+                    <FluentBadge   Appearance="Appearance.Neutral">   <FluentIcon Value="@(new Icons.Regular.Size16.Tag())" />@label.Name</FluentBadge>
+                }
+            </div>
+        </FluentCard>
+    }
+</FluentStack>
+
+<style>
+    .item-card {
+        position: relative;
+    }
+
+    .qty-badge {
+        margin-top: 10px;
+    }
+
+    .labels {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+</style>
+
+@code {
+    Location location = new Location();
+    private bool _trapFocus = true;
+    private bool _modal = true;
+    
+    
+    [Parameter]
+    public Guid Id { get; set; }
+
+    // This method is called when the component is first initialized
+    protected override async Task OnInitializedAsync()
+    {
+        location = await LocationService.GetLocationByIdWithItemsAsync(Id);
+    }
+    private async Task OpenLocationDialogAsync()
+    {
+        
+        DialogParameters parameters = new()
+        {
+            Title = $"Update Location",
+            PrimaryAction = "Yes",
+            PrimaryActionEnabled = false,
+            SecondaryAction = "No",
+            Width = "500px",
+            TrapFocus = _trapFocus,
+            Modal = _modal,
+            PreventScroll = true, 
+        };
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<LocationDialog>(location, parameters);
+        DialogResult? result = await dialog.Result;
+        if (!result.Cancelled && result.Data != null)
+        {
+            location = (Location)result.Data;
+    //save location 
+            
+            try
+            {
+    // Save location and if successful show toast
+                await LocationService.UpdateLocationAsync(location);
+                ToastService.ShowToast(ToastIntent.Success, "Location Updated", null, null, null);
+                
+            }
+            catch (Exception ex)
+            {
+    // If there's an error, show toast with error message
+                ToastService.ShowToast(ToastIntent.Error, "Error updating location", null, null,null);
+            }
+
+        }
+    }
+}

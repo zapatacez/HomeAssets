@@ -3,15 +3,18 @@
 @inject ILocationService LocationService
 @inject IItemService ItemService
 <h3>LocationTree</h3>
-
-<p>Locations</p>
+<FluentCard Width="300px">
 @foreach (var location in locations)
 {
-    <FluentStack Orientation="Orientation.Horizontal">
-        <FluentTreeView>
+  
+        <FluentTreeView >
             <FluentTreeItem @bind-Expanded="@LocationExpanded">
-                @location.Name
-                @foreach(var item in location.Items)
+                @* <FluentNavLink Icon="@(new Icons.Regular.Size16.Location())" Href=@($"location/{@location.Id}")>@location.Name</FluentNavLink> *@
+                <FluentIcon Value="@(new Icons.Regular.Size16.Location())"></FluentIcon>
+                <a href=@($"location/{@location.Id}")>@location.Name</a>
+
+
+                @foreach (var item in location.Items)
                 {
                     <FluentTreeItem>
                         @item.Name
@@ -21,9 +24,9 @@
             </FluentTreeItem>
         </FluentTreeView>
 
-    </FluentStack>
-}
 
+}
+   </FluentCard>
 @code {
     List<Location> locations = new List<Location>();
     FluentTreeItem? currentSelected;

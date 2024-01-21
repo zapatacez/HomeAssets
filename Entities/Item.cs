@@ -7,9 +7,9 @@ public class Item
     public Guid Id { get; set; } = Guid.NewGuid();
     [Required] public string Name { get; set; } = "";
     [Required] public string Description { get; set; } = "";
-    public int Quantity { get; set; }
+    public int Quantity { get; set; } = 1;
     public int AssetId { get; set; }
-    public decimal Price { get; set; }
+    public decimal Price { get; set; }= 0;
     public bool Insured { get; set; }
     public DateTime PurchaseDate { get; set; }
     public DateTime? ExpirationDate { get; set; }
