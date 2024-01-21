@@ -26,14 +26,26 @@ public class ItemService: IItemService
         await _unitOfWork.SaveChangesAsync();
     }
  
+    // Get the next available AssetId
     private async Task<int> GetNextAssetId()
     {
-        // Check the existing maximum AssetId
-        var items =  await _itemRepository.GetAllAsync();
-        int maxAssetId = items.Max(i => i.AssetId);
+        // Check if there are any existing items
+        var existingItems = await _itemRepository.GetAllAsync();
 
-        // Increment and return the next AssetId
-        return maxAssetId + 1;
+        if (existingItems.Any())
+        {
+            // If there are items, calculate the existing maximum AssetId
+            int maxAssetId = existingItems.Max(i => i.AssetId);
+
+            // Increment and return the next AssetId
+            return maxAssetId + 1;
+        }
+        else
+        {
+            // If no items exist, start with AssetId of 1
+            return 1;
+        }
     }
+    
 
 }

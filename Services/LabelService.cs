@@ -23,5 +23,11 @@ public class LabelService: ILabelService
         await  _labelRepository.AddAsync(label);
         await _unitOfWork.SaveChangesAsync();
     }
+    
+    //get all labels
+    public async Task<IEnumerable<Label>> GetAllLabelsAsync()
+    {
+        return await _labelRepository.GetAllAsync();
+    }
  
 }

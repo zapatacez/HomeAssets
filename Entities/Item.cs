@@ -18,7 +18,7 @@ public class Item
     public string Manufacturer { get; set; }= "";
     public string Notes { get; set; }= "";
     //has many labels
-    public ICollection<Label> Labels { get; set; } = new List<Label>();
+    public ICollection<ItemLabel> ItemLabels { get; set; } = new List<ItemLabel>();
     //has one location
     public Guid LocationId { get; set; }
     public Location Location { get; set; } = new Location();

@@ -6,5 +6,5 @@ public class Label
     public string Name { get; set; }= "";
     public string Description { get; set; }= "";
     //has one Item
-    public Item Item { get; set; } = new Item();
+    public List<ItemLabel> ItemLabels { get; set; } = new List<ItemLabel>();
 }

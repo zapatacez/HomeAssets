@@ -22,11 +22,19 @@
                 @bind-Value="@selectedLocationId" />
 
 <FluentTextField @bind-value="@Content.Name" Label="Item Name" />
- <FluentTextArea @bind-Value="@Content.Description" Cols="60" Label="Item Description"></FluentTextArea>
+<FluentTextArea @bind-Value="@Content.Description" Cols="60" Label="Item Description"></FluentTextArea>
 
- 
 
-@* Footer *@
+<FluentAutocomplete TOption="Label"
+                    AutoComplete="off"
+                    Label="Select a Labels"
+                    Width="250px"
+                    Placeholder="Select Labels"
+                    OnOptionsSearch="@OnSearchAsync"
+                    MaximumSelectedOptions="3"
+                    OptionText="@(item => item.Name)"
+                    @bind-SelectedOptions="@selectedLabels" />
+
 <FluentDialogFooter>
     <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync">Save</FluentButton>
     
@@ -42,6 +50,24 @@
     string? selectedLocationId;
     Location? selectedLocationOption;
     List<Location> locationOptions = new List<Location>();
+    
+    
+    
+    List<Option<string>> stringOptions = new()
+    {
+        { new Option<string> { Value = "1", Text = "One" } },
+        { new Option<string> { Value = "2", Text = "Two", Selected = true} },
+        { new Option<string> { Value = "3", Text = "Three" } }
+
+    };
+    IEnumerable<Label> selectedLabels = Array.Empty<Label>();
+
+    private async Task OnSearchAsync(OptionsSearchEventArgs<Label> e)
+    {
+        var allLabels = await LabelService.GetAllLabelsAsync();
+        e.Items = allLabels.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(i => i.Name);
+    }
     
     protected override async Task OnInitializedAsync()
     {
@@ -60,6 +86,11 @@
         }
         else
         {
+    // Assign the selected labels to the item's ItemLabels property
+            Content.ItemLabels = selectedLabels
+                .Select(label => new ItemLabel { LabelId = label.Id, ItemId = Content.Id })  // Assuming LabelId and ItemId are the foreign keys
+                .ToList();
+
             await Dialog.CloseAsync(Content);    
         }
     }

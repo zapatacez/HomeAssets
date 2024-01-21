@@ -6,5 +6,6 @@ public interface ILabelService
 {
     //implement CRUD operations
     Task AddLabelAsync(Label label);
-    
+    Task<IEnumerable<Label>> GetAllLabelsAsync();
+
 }
