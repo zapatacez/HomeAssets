@@ -1,0 +1,53 @@
+
+@using HomeAssets.Services
+@using HomeAssets.Entities
+@using HomeAssets.Components.GlobalComponents
+@using HomeAssets.DTOs
+@using System.Dynamic
+@using System.Reflection
+@using System.ComponentModel.DataAnnotations
+@inject IItemService ItemService
+<h3>Item Edit</h3>
+
+//Create Form with all the fields
+<EditForm Model="@item" >
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="Name">Name</label>
+        <InputText id="Name" class="form-control" @bind-Value="item.Name" />
+    </div>
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <InputText id="Description" class="form-control" @bind-Value="item.Description" />
+    </div>
+    <div class="form-group">
+        <label for="Price">Price</label>
+        <InputNumber id="Price" class="form-control" @bind-Value="item.Price" />
+    </div>
+    <div class="form-group">
+        <label for="Quantity">Quantity</label>
+        <InputNumber id="Quantity" class="form-control" @bind-Value="item.Quantity" />
+    </div>
+
+ </EditForm>
+
+
+ 
+
+
+@code {
+   public Item item = new Item();
+    
+    [Parameter]
+    public Guid Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        item = await ItemService.GetItemAsync(Id);
+    
+    }
+    
+
+}

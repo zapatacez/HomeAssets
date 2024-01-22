@@ -1,0 +1,22 @@
+@page "/itemdetail/{id:guid}"
+<h3>ItemDetail</h3>
+
+<FluentTabs>
+    <FluentTab Label="Details">
+        
+        <ItemView Id="Id"></ItemView>y
+    </FluentTab>
+       <FluentTab Label="Edit">
+            
+            <ItemEdit Id="Id"></ItemEdit>
+        </FluentTab>
+        
+
+</FluentTabs>
+
+
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+}

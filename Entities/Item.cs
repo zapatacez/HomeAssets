@@ -10,6 +10,8 @@ public class Item
     public int Quantity { get; set; } = 1;
     public int AssetId { get; set; }
     public decimal Price { get; set; }= 0;
+    //added datetime 
+    public DateTime? CreatedDate { get; set; } = DateTime.Now;
     public bool Insured { get; set; }
     public decimal PurchasePrice { get; set; }= 0;
     public DateTime PurchaseDate { get; set; }
