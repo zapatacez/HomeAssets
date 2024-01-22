@@ -2,49 +2,75 @@
 @using HomeAssets.Services
 @using HomeAssets.Entities
 @using HomeAssets.Components.GlobalComponents
+@using HomeAssets.DTOs
+@using System.Dynamic
+@using System.Reflection
+@using System.ComponentModel.DataAnnotations
 @inject IItemService ItemService
 <h3>ItemView</h3>
 
-@item.Name  
 
-<FluentCard Width="500px">
-    <h5>Purchase Details</h5>
-    <FluentDivider Orientation="Orientation.Horizontal"></FluentDivider>
-    <DetailsSection Details="purchaseDetails"/>
-</FluentCard>
+<FluentAccordion>
+    @foreach (var group in detailGroups)
+    {
+        <DetailsSection Title="@group.Key" Details="group.Value" />
+    }
+</FluentAccordion>
 
-<FluentCard Width="500px">
-    <h5>Warranty Details</h5>
-    <FluentDivider Orientation="Orientation.Horizontal"></FluentDivider>
-    <DetailsSection Details="warrantyDetails"/>
-</FluentCard>
+
+
+
+ 
+
+
 @code {
    public Item item = new Item();
-    public List<Detail> purchaseDetails = new List<Detail>();
-    public List<Detail> warrantyDetails = new List<Detail>();
- 
-    
-    
+    private Dictionary<string, CustomItemGroup> detailGroups = new Dictionary<string, CustomItemGroup>();
     
     [Parameter]
     public Guid Id { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         item = await ItemService.GetItemAsync(Id);
-        
-        purchaseDetails = new List<Detail>
+        //map item to ItemDto 
+        var itemDto = new ItemDTO()
         {
-            
-            new Detail { Name = "Purchase Price", Text =item.PurchasePrice.ToString(), Type = "currency" },
-            new Detail { Name = "Purchase Date", Text = item.PurchaseDate.ToString(), Type = "date" },
-        };
-        warrantyDetails = new List<Detail>
-        {
-            new Detail { Name = "Warranty Start", Text = item.LifetimeWarranty.ToString(), Type = "text" },
-            new Detail { Name = "Warranty End", Text = item.WarrantyDetails, Type = "text" },
+            Name = item.Name,
+            Description = item.Description,
+            PurchasePrice = item.PurchasePrice,
+            PurchaseDate = item.PurchaseDate,
+            LifetimeWarranty = item.LifetimeWarranty,
+            WarrantyDetails = item.WarrantyDetails,
+
 
         };
+        
+        detailGroups.Add("General Details",  new CustomItemGroup{ IsExpanded = true,GroupValue =CreateGroup(itemDto,"Name", "Description")});
+        detailGroups.Add("Purchase Details",  new CustomItemGroup{ IsExpanded = false,GroupValue =CreateGroup(itemDto,"PurchasePrice", "PurchaseDate")});
+        detailGroups.Add("Warranty Details",  new CustomItemGroup{ IsExpanded = false,GroupValue =CreateGroup(itemDto,"LifetimeWarranty", "WarrantyDetails")});
+  
     }
     
-    
+    private object CreateGroup(object sourceObject, params string[] propertyNames)
+    {
+        var group = new ExpandoObject() as IDictionary<string, object>;
+
+        foreach (var propertyName in propertyNames)
+        {
+            var property = sourceObject.GetType().GetProperty(propertyName);
+
+            if (property != null)
+            {
+                var displayAttribute = property.GetCustomAttribute<DisplayAttribute>();
+                var displayName = displayAttribute?.Name ?? propertyName;
+
+                var propertyValue = property.GetValue(sourceObject);
+                group.Add(displayName, propertyValue);
+            }
+        }
+
+        return group;
+    }
+
 }

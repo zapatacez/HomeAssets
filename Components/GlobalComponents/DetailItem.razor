@@ -1,0 +1,18 @@
+<style>
+    .PriceLine {
+        margin-bottom: 20px;
+        margin-top: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+        
+    }
+</style>
+
+<div class="PriceLine"><span>@Title</span> <FluentSpacer Width="100" /> <span> @Value</span></div>
+@code {
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public string Value { get; set; }
+   
+}

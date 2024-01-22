@@ -1,34 +1,19 @@
- <dl>
-    @foreach (var detail in Details)
+@using System.Dynamic
+<FluentAccordionItem Heading="@Title" Expanded="@Details.IsExpanded">
+    @foreach (var detail in (IDictionary<string, object>)Details.GroupValue)
     {
-       
-        <dd>
-            @RenderDetail(detail)
-        </dd>
-      
+        <div>
+            <DetailItem Title="@detail.Key" Value="@detail.Value?.ToString()"></DetailItem>
+        </div>
     }
-  </dl>
-
+</FluentAccordionItem>
 
 @code {
-    [Parameter] public List<Detail> Details { get; set; }= new List<Detail>();
+    [Parameter]
+    public string Title { get; set; } = "";
 
-    private RenderFragment RenderDetail(Detail detail)
-    {
-        switch (detail.Type)
-        {
-            case "date":
-                return @<span> @((detail as DateDetail)?.Date)</span>;
-            case "currency":
-                return @<span>Precio @detail.Name    @detail.Text</span>; // Render currency differently if needed
-               
-            case "link":
-                return @<a href="@((detail as LinkDetail)?.Href)">@detail.Text</a>; // Render link differently if needed
-            case "markdown":
-                return @<div> dude @detail.Text</div>; // Render markdown differently if needed
-            case "text":
-            default:
-                return @<span> @detail.Name y @detail.Text</span>; // Default rendering
-        }
-    }
+    [Parameter]
+    public CustomItemGroup Details { get; set; } = new CustomItemGroup();
+
+  
 }
