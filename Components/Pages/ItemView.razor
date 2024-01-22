@@ -34,19 +34,16 @@
     {
         item = await ItemService.GetItemAsync(Id);
         //map item to ItemDto 
-        var itemDto = new ItemDTO()
-        {
-            Name = item.Name,
-            Description = item.Description,
-            PurchasePrice = item.PurchasePrice,
-            PurchaseDate = item.PurchaseDate,
-            LifetimeWarranty = item.LifetimeWarranty,
-            WarrantyDetails = item.WarrantyDetails,
+        var itemDto = new ItemDTO();
+        itemDto.Name = item.Name;
+        itemDto.Quantity = item.Quantity;
+        itemDto.Description = item.Description;
+        itemDto.PurchasePrice = item.PurchasePrice;
+        itemDto.PurchaseDate = item.PurchaseDate;
+        itemDto.LifetimeWarranty = item.LifetimeWarranty;
+        itemDto.WarrantyDetails = item.WarrantyDetails;
 
-
-        };
-        
-        detailGroups.Add("General Details",  new CustomItemGroup{ IsExpanded = true,GroupValue =CreateGroup(itemDto,"Name", "Description")});
+        detailGroups.Add("General Details",  new CustomItemGroup{ IsExpanded = true,GroupValue =CreateGroup(itemDto,"Name", "Description","Quantity")});
         detailGroups.Add("Purchase Details",  new CustomItemGroup{ IsExpanded = false,GroupValue =CreateGroup(itemDto,"PurchasePrice", "PurchaseDate")});
         detailGroups.Add("Warranty Details",  new CustomItemGroup{ IsExpanded = false,GroupValue =CreateGroup(itemDto,"LifetimeWarranty", "WarrantyDetails")});
   

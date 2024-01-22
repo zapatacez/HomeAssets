@@ -23,6 +23,7 @@ public class Item
     public string ModelNumber { get; set; } = "";
     public string Manufacturer { get; set; }= "";
     public string Notes { get; set; }= "";
+    public  string Vendor { get; set; }= "";
     //has many labels
     public ICollection<ItemLabel> ItemLabels { get; set; } = new List<ItemLabel>();
     //has one location
