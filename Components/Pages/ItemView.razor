@@ -1,0 +1,50 @@
+@page "/item/{id:guid}"
+@using HomeAssets.Services
+@using HomeAssets.Entities
+@using HomeAssets.Components.GlobalComponents
+@inject IItemService ItemService
+<h3>ItemView</h3>
+
+@item.Name  
+
+<FluentCard Width="500px">
+    <h5>Purchase Details</h5>
+    <FluentDivider Orientation="Orientation.Horizontal"></FluentDivider>
+    <DetailsSection Details="purchaseDetails"/>
+</FluentCard>
+
+<FluentCard Width="500px">
+    <h5>Warranty Details</h5>
+    <FluentDivider Orientation="Orientation.Horizontal"></FluentDivider>
+    <DetailsSection Details="warrantyDetails"/>
+</FluentCard>
+@code {
+   public Item item = new Item();
+    public List<Detail> purchaseDetails = new List<Detail>();
+    public List<Detail> warrantyDetails = new List<Detail>();
+ 
+    
+    
+    
+    [Parameter]
+    public Guid Id { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        item = await ItemService.GetItemAsync(Id);
+        
+        purchaseDetails = new List<Detail>
+        {
+            
+            new Detail { Name = "Purchase Price", Text =item.PurchasePrice.ToString(), Type = "currency" },
+            new Detail { Name = "Purchase Date", Text = item.PurchaseDate.ToString(), Type = "date" },
+        };
+        warrantyDetails = new List<Detail>
+        {
+            new Detail { Name = "Warranty Start", Text = item.LifetimeWarranty.ToString(), Type = "text" },
+            new Detail { Name = "Warranty End", Text = item.WarrantyDetails, Type = "text" },
+
+        };
+    }
+    
+    
+}

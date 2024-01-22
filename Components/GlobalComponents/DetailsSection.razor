@@ -1,0 +1,34 @@
+ <dl>
+    @foreach (var detail in Details)
+    {
+       
+        <dd>
+            @RenderDetail(detail)
+        </dd>
+      
+    }
+  </dl>
+
+
+@code {
+    [Parameter] public List<Detail> Details { get; set; }= new List<Detail>();
+
+    private RenderFragment RenderDetail(Detail detail)
+    {
+        switch (detail.Type)
+        {
+            case "date":
+                return @<span> @((detail as DateDetail)?.Date)</span>;
+            case "currency":
+                return @<span>Precio @detail.Name    @detail.Text</span>; // Render currency differently if needed
+               
+            case "link":
+                return @<a href="@((detail as LinkDetail)?.Href)">@detail.Text</a>; // Render link differently if needed
+            case "markdown":
+                return @<div> dude @detail.Text</div>; // Render markdown differently if needed
+            case "text":
+            default:
+                return @<span> @detail.Name y @detail.Text</span>; // Default rendering
+        }
+    }
+}

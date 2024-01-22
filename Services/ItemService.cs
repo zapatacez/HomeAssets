@@ -23,6 +23,12 @@ public class ItemService: IItemService
     {
         return await _itemRepository.CountAsync();
     }
+
+    public Task<Item> GetItemAsync(Guid id)
+    {
+        return _itemRepository.GetByIdAsync(id);
+    }
+
     public async Task AddItemAsync(Item item)
     {
         // Set the AssetId.

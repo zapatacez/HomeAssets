@@ -11,7 +11,13 @@ public class Item
     public int AssetId { get; set; }
     public decimal Price { get; set; }= 0;
     public bool Insured { get; set; }
+    public decimal PurchasePrice { get; set; }= 0;
     public DateTime PurchaseDate { get; set; }
+    //write 3 fields for warranty
+    public bool LifetimeWarranty { get; set; }
+    public string WarrantyDetails { get; set; }= "";
+    public DateTime? WarrantyExpirationDate { get; set; }
+    
     public DateTime? ExpirationDate { get; set; }
     public string SerialNumber { get; set; } = "";
     public string ModelNumber { get; set; } = "";

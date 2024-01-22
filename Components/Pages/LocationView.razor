@@ -5,19 +5,33 @@
 @inherits LayoutComponentBase
 @inject IDialogService DialogService
 @inject IToastService ToastService
+@using QRCoder
 @rendermode InteractiveServer
 
-<FluentCard Width="750px">
+<FluentCard Width="750px"  AreaRestricted="false">
     <FluentGrid>
         <FluentGridItem xs="1" sm="1"><FluentIcon Value="@(new Icons.Regular.Size24.Location())"/></FluentGridItem>
         <FluentGridItem xs="6" sm="3"><h2>@location.Name</h2></FluentGridItem>
-         <FluentGridItem xs="12" sm="6">  <FluentButton IconStart="@(new Icons.Regular.Size16.Pen())" OnClick="@OpenLocationDialogAsync" Appearance="Appearance.Accent">Edit</FluentButton></FluentGridItem>
-    </FluentGrid>
+        <FluentGridItem xs="12" sm="2">
+            <FluentButton IconStart="@(new Icons.Regular.Size16.Pen())" OnClick="@OpenLocationDialogAsync" Appearance="Appearance.Accent">Edit</FluentButton>
+        </FluentGridItem>
     
- 
-        
-  
+        <FluentGridItem xs="12" sm="2">
+
+            <FluentButton IconStart="@(new Icons.Regular.Size16.Image())" OnClick="@OpenQrCode" Appearance="Appearance.Accent">Show QR Code</FluentButton>
+               @if (showQrCode)
+               {
+                   <div style="z-index: 2" >
+                       <FluentCard Width="100px" AreaRestricted="false">
+                           <img src="@QrCodeImageUrl" alt="QR Code" height="60px" width="60px">
+                       </FluentCard>
+                   </div>
+               }
+
+        </FluentGridItem>
+    </FluentGrid>
 </FluentCard>
+
 
 <h3>Items</h3>
 
@@ -25,7 +39,7 @@
     @foreach (var item in location.Items)
     {
         <FluentCard Width="250px" Height="200px" Class="item-card">
-            <label>@item.Name</label>
+             <a href=@($"item/{@item.Id}")>@item.Name</a>
             <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
 
             <div class="qty-badge">
@@ -40,7 +54,6 @@
                 @foreach (var itemLabel in item.ItemLabels)
                 {
                     var label = itemLabel.Label; // Access the Label entity associated with the ItemLabel
-                 
                     <FluentBadge   Appearance="Appearance.Neutral">   <FluentIcon Value="@(new Icons.Regular.Size16.Tag())" />@label.Name</FluentBadge>
                 }
             </div>
@@ -71,7 +84,8 @@
     Location location = new Location();
     private bool _trapFocus = true;
     private bool _modal = true;
-    
+    private string QrCodeImageUrl { get; set; }
+    private bool showQrCode = false;
     
     [Parameter]
     public Guid Id { get; set; }
@@ -80,6 +94,24 @@
     protected override async Task OnInitializedAsync()
     {
         location = await LocationService.GetLocationByIdWithItemsAsync(Id);
+        QrCodeImageUrl = GenerateQrCode("https://example.com");
+    }
+    
+    private string GenerateQrCode(string data)
+    {
+        QRCodeGenerator qrGenerator = new QRCodeGenerator();
+        QRCodeData qrCodeData = qrGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
+        BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+        byte[] qrCodeBytes = qrCode.GetGraphic(20);
+
+    // Convert the byte array to base64 data
+        return $"data:image/png;base64,{Convert.ToBase64String(qrCodeBytes)}";
+    }
+    
+    private async Task OpenQrCode()
+    {
+        showQrCode = !showQrCode;
+        StateHasChanged();
     }
     private async Task OpenLocationDialogAsync()
     {
