@@ -1,0 +1,36 @@
+﻿@page "/"
+@using HomeAssets.Services
+@using HomeAssets.DTOs
+@inject IDialogService DialogService
+@inject IHomeService HomeService
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+<label>Quick Statistics</label>
+<FluentStack>
+    <FluentCard  Width="140px" Height="80px">
+        <FluentLabel Typo="Typography.H6">Total Locations</FluentLabel>
+        <FluentLabel Typo="Typography.H2"> @homeDTO.TotalLocations</FluentLabel>
+    </FluentCard>
+    <FluentCard Width="140px" Height="80px">
+        <FluentLabel Typo="Typography.H6">Total Items</FluentLabel>
+        <FluentLabel Typo="Typography.H2">@homeDTO.TotalItems</FluentLabel>
+    </FluentCard>
+</FluentStack>
+
+
+
+@code{
+    HomeDTO homeDTO = new HomeDTO();
+
+    //get the data from the service
+    protected override async Task OnInitializedAsync()
+    {
+        homeDTO =   await HomeService.GetHomeDataAsync();
+        
+    }
+    
+    
+
+}
+
