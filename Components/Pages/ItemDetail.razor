@@ -1,12 +1,14 @@
-@page "/itemdetail/{id:guid}"
+@page "/item/{id:guid}"
+@page "/item/{id:guid}/edit"
+@inject NavigationManager NavigationManager
 <h3>ItemDetail</h3>
 
-<FluentTabs>
-    <FluentTab Label="Details">
+<FluentTabs @bind-ActiveTabId="@activeid" >
+    <FluentTab Label="Details" Id="tab-0">
         
         <ItemView Id="Id"></ItemView>y
-    </FluentTab>
-       <FluentTab Label="Edit">
+    </FluentTab >
+       <FluentTab Label="Edit" Id="tab-1">
             
             <ItemEdit Id="Id"></ItemEdit>
         </FluentTab>
@@ -17,6 +19,14 @@
 
 
 @code {
+    string? activeid = "tab-1";
     [Parameter]
     public Guid Id { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        var uri = new Uri(NavigationManager.Uri);
+        activeid = uri.AbsolutePath.Contains("/edit") ? "tab-1" : "tab-0";
+        StateHasChanged();  
+    }
 }

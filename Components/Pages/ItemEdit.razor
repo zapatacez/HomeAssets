@@ -7,33 +7,23 @@
 @using System.Reflection
 @using System.ComponentModel.DataAnnotations
 @inject IItemService ItemService
+@rendermode InteractiveServer
 <h3>Item Edit</h3>
 
-//Create Form with all the fields
-<EditForm Model="@item" >
+<FluentCard Width="300px">
+<EditForm Model="@item" OnValidSubmit="SaveItem"  id="testform"  >
     <DataAnnotationsValidator />
-    <ValidationSummary />
+   <FluentValidationValidator />
+    
+    <FluentTextField Label="Name" @bind-value="item.Name"></FluentTextField>
+    <FluentTextField Label="Description" @bind-value="item.Description"></FluentTextField>
+    <FluentTextField Label="Serial Number" @bind-value="item.SerialNumber"></FluentTextField>
 
-    <div class="form-group">
-        <label for="Name">Name</label>
-        <InputText id="Name" class="form-control" @bind-Value="item.Name" />
-    </div>
-    <div class="form-group">
-        <label for="Description">Description</label>
-        <InputText id="Description" class="form-control" @bind-Value="item.Description" />
-    </div>
-    <div class="form-group">
-        <label for="Price">Price</label>
-        <InputNumber id="Price" class="form-control" @bind-Value="item.Price" />
-    </div>
-    <div class="form-group">
-        <label for="Quantity">Quantity</label>
-        <InputNumber id="Quantity" class="form-control" @bind-Value="item.Quantity" />
-    </div>
+<FluentButton Appearance="Appearance.Accent" Type="Microsoft.FluentUI.AspNetCore.Components.ButtonType.Submit"  FormId="testform">Submit</FluentButton>
 
  </EditForm>
 
-
+</FluentCard>
  
 
 
@@ -47,6 +37,13 @@
     {
         item = await ItemService.GetItemAsync(Id);
     
+    }
+    
+    //Save model
+    private async Task SaveItem()
+    {
+        await ItemService.UpdateItemAsync(item);
+        
     }
     
 

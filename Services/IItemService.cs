@@ -8,5 +8,6 @@ public interface IItemService
     Task AddItemAsync(Item item);
     Task<int> GetItemsCountAsync();
     Task<Item> GetItemAsync(Guid id);
-    
+
+    Task UpdateItemAsync(Item item);
 }

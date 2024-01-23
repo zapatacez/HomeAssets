@@ -36,6 +36,12 @@ public class ItemService: IItemService
         await  _itemRepository.AddAsync(item);
         await _unitOfWork.SaveChangesAsync();
     }
+    
+    public async Task UpdateItemAsync(Item item)
+    {
+        await _itemRepository.UpdateAsync(item);
+        await _unitOfWork.SaveChangesAsync();
+    }
  
     // Get the next available AssetId
     private async Task<int> GetNextAssetId()
